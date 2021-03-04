@@ -1,0 +1,5 @@
+package topscorer;
+
+public class IncorrectCSVFormat extends RuntimeException {
+
+}

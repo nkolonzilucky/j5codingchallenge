@@ -1,0 +1,11 @@
+package topscorer;
+
+public class IncorrectStudentRecord extends RuntimeException {
+
+	public IncorrectStudentRecord() {
+		super("Incorrect student record!");
+		// TODO Auto-generated constructor stub
+	}
+
+	
+}

@@ -1,0 +1,54 @@
+package main;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
+import topscorer.FileManager;
+import topscorer.Student;
+
+public class Main {
+
+	public static void main(String[] args) {
+		String dir = "Dataset";
+		
+		try {
+
+			for(String s : Paths.get(dir).toFile().list()) {
+				Paths.get(s).toFile().delete();
+			}
+
+			Files.deleteIfExists(Paths.get(dir));
+	
+		} catch (IOException e) {
+			System.out.println("Could not delete dir");
+		}
+		
+		if(args.length == 0) {
+			args = new String[2];
+			System.out.print("Please enter the input file name: ");
+			Scanner scanner = new Scanner(System.in);
+			args[0] = scanner.nextLine();
+			System.out.print("Please enter the output file name: ");
+			args[1] = scanner.nextLine();
+			scanner.close();
+		}
+		FileManager fileManager = new FileManager(args[0], args[1], "Dataset");
+		Student newStudent = null;
+		Student prevStudent = null;
+
+		while ((newStudent = fileManager.readALineFromInputFile()) != null) {
+			if (prevStudent == null) {
+				fileManager.writeToOutputFile(newStudent, false);
+			} else if (newStudent.getScore() == prevStudent.getScore()) {
+				fileManager.writeToOutputFile(newStudent, true);
+			} else if (newStudent.getScore() > prevStudent.getScore()) {
+				fileManager.writeToOutputFile(newStudent, false);
+			}
+			prevStudent = newStudent;
+		}
+		System.exit(0);
+	}
+
+}

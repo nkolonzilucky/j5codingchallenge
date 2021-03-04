@@ -1,0 +1,10 @@
+package topscorer;
+
+public class IncorrectStudentRecord extends RuntimeException {
+
+	public IncorrectStudentRecord() {
+		super("Incorrect student record!");
+	}
+
+	
+}

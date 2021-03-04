@@ -1,0 +1,82 @@
+package main;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
+
+import topscorer.FileManager;
+import topscorer.Student;
+
+public class Main {
+
+	public static void main(String[] args) {
+	
+		Properties propFile  = new Properties();
+		try {
+			propFile = setProperties("config.prop");
+		} catch (IOException e1) {
+			System.out.println("Cannot read properties file \"config.prop\"");
+		}
+		
+		String inputDir = propFile.getProperty("inputDirectory.name");
+		String outputDir = propFile.getProperty("outputDirectory.name");
+		try {
+			if (Files.exists(Paths.get(outputDir))) {
+				for (String s : Paths.get(outputDir).toFile().list()) {
+					Paths.get(outputDir, s).toFile().delete();
+				}
+				Files.delete(Paths.get(outputDir));
+			}
+		} catch (IOException e) {
+			System.out.println("Could not delete dir");
+		}
+
+		if (args.length == 0) {
+			args = new String[2];
+			System.out.print("Please enter the input file name: ");
+			Scanner scanner = new Scanner(System.in);
+			args[0] = scanner.nextLine();
+			System.out.print("Please enter the output file name: ");
+			args[1] = scanner.nextLine();
+			scanner.close();
+		}
+		FileManager fileManager = new FileManager(args[0], args[1], inputDir, outputDir);
+		Student newStudent = null;
+		Student prevStudent = null;
+		Student lastAppendedStudent = null;
+		
+		Map<Student, Integer> map = new HashMap<>();
+		
+		while ((newStudent = fileManager.readALineFromInputFile()) != null) {
+			if (lastAppendedStudent == null) {
+				fileManager.writeToOutputFile(newStudent, false);
+				lastAppendedStudent = newStudent;
+			} else if (newStudent.getScore() == lastAppendedStudent.getScore()) {
+				fileManager.writeToOutputFile(newStudent, true);
+				lastAppendedStudent = newStudent;
+			} else if (newStudent.getScore() > lastAppendedStudent.getScore()) {
+				fileManager.writeToOutputFile(newStudent, false);
+			}
+			prevStudent = newStudent;
+		}
+		System.out.println("Completed succefully");
+		System.exit(0);
+	}
+
+	public static Properties setProperties(String filename) throws IOException {
+		File propertiesFile = Paths.get("resources", filename).toFile();
+		FileInputStream inStream;
+		Properties properties = new Properties();
+		inStream = new FileInputStream(propertiesFile);
+		properties.load(inStream);
+		return properties;
+
+	}
+
+}

@@ -1,0 +1,53 @@
+package topscorer;
+
+public class Student {
+
+	private String name;
+	private String surname;
+	private String score;
+	private String lineNumber;
+
+	public void setScore(String score) {
+		try {
+			Integer.parseInt(score);
+			this.score = score;
+		} catch (NumberFormatException e) {
+			System.out.println("The student record in line " + this.lineNumber + " contains a non interger score.");
+		}
+
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public String getLineNumber() {
+		return lineNumber;
+	}
+
+	public void setLineNumber(String lineNumber) {
+		this.lineNumber = lineNumber;
+	}
+
+	@Override
+	public String toString() {
+		return name + " " + surname;
+	}
+
+}
